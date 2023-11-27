@@ -3,30 +3,14 @@
 #include <stdbool.h>
 #include <string.h>
 
-// Step to the maze
-#define STEP_INTO_FROM_LEFT 1
-#define STEP_INTO_FROM_RIGHT 2
-#define STEP_INTO_FROM_UP 3
-#define STEP_INTO_FROM_DOWN 4
-
-// Borders
-#define LEFT_WALL 0
-#define RIGHT_WALL 1
-#define UPPERorLOWER_WALL 2
-
-// Solving rule
-#define RIGHT_HAND 0
-#define LEFT_HAND 1
-
-// Creating structure for maze
 typedef struct {
     int rows;
     int cols;
     unsigned char *cells;
 } Map;
 
-// Printing help information
 int printHelp() {
+    // Printing help information
     printf("Usage: ./maze [OPTIONS]\n");
     printf("Options:\n");
     printf(" --help                    Display this message\n");
@@ -36,7 +20,6 @@ int printHelp() {
     return 0;
 }
 
-// Map initialization
 int initMap(Map *map, int rows, int cols) {
     map->rows = rows;
     map->cols = cols;
@@ -48,7 +31,6 @@ int initMap(Map *map, int rows, int cols) {
     return 0;
 }
 
-// Store the data in map structure
 int readMap(Map *map, const char *fileName) {
     // Open the file
     FILE *file = fopen(fileName, "r");
@@ -70,6 +52,7 @@ int readMap(Map *map, const char *fileName) {
         for (int j = 0; j < map->cols; j++) {
             unsigned char value;
             fscanf(file, "%hhu", &value);
+            // Preprocess the value and store it in the cells array
             map->cells[i * cols + j] = value;
         }
     }
@@ -79,7 +62,6 @@ int readMap(Map *map, const char *fileName) {
     return 0;
 }
 
-// Destructor of map
 int freeMap (Map *map) {
     free(map->cells);
     map->rows = 0;
@@ -88,21 +70,18 @@ int freeMap (Map *map) {
     return 0;
 }
 
-// Check that adjacent borders in the map declaration are the same
 int sharedBorder(const Map *map) {
     for (int i = 0; i < map->rows; i++) {
         for (int j = 0; j < map->cols; j++) {
             unsigned char value = map->cells[(i * map->cols) + j];
 
-            if (j < (map->cols - 1)) {
-                // -1 because last column does not have column next to it
+            if (j < (map->cols - 1)) { // -1 because last row does not have row next to it
                 unsigned char nextBorder = map->cells[i * map->cols + (j + 1)];
                 if (((value >> 1) & 1) != ((nextBorder >> 0) & 1)) {
                     return 0;
                 }
             }
 
-            // shape - ▼
             if ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) {
 
                 if (i < map->rows && i > 0) {
@@ -112,11 +91,8 @@ int sharedBorder(const Map *map) {
                     }
                 }
             }
-
-            // shape - ▲
             else {
-                if (i < (map->rows - 1)) {
-                    // -1 because the last line does not have lower border
+                if (i < (map->rows - 1)) { // -1 because the last line does not have lower border
                     unsigned char lowerBorder = map-> cells[(i+1) * map->cols + j];
                     if (((value >> 2) & 1) != ((lowerBorder >> 2) & 1)) {
                         return 0;
@@ -129,8 +105,8 @@ int sharedBorder(const Map *map) {
     return 1;
 }
 
-// Function that is testing the declaration of map
 int testMap(const char *fileName) {
+    // Open the file
     FILE *file = fopen(fileName, "r");
     if (file == NULL) {
         fprintf(stderr, "Error opening file: %s\n", fileName);
@@ -139,7 +115,7 @@ int testMap(const char *fileName) {
 
     // Read the first line (definition of rows and columns)
     int count = 0; // In the first line must be only 2 characters
-    int c; // Pointer in file
+    int c; // Pointer
     while ((c = fgetc(file)) != '\n') {
         if (c != ' ') {
             count++;
@@ -224,6 +200,7 @@ int testMap(const char *fileName) {
         return 1;
     }
 
+    // Close the file and deallocate memory
     fclose(file);
     freeMap(&maze);
 
@@ -231,7 +208,6 @@ int testMap(const char *fileName) {
     return 0;
 }
 
-// Check if there is a way how to enter maze
 bool entryPossible (Map *map, int r, int c) {
     if (r == 1 || r == map->rows || c == 1 || c == map->cols) {
         if ((r == 1 && c == 1) || (r == map->rows && c == 1)) {
@@ -282,14 +258,13 @@ bool entryPossible (Map *map, int r, int c) {
     return true;
 }
 
-// Check borders of cell
-bool isborder(Map *map, int r, int c, int border) {
+bool isborder(Map *map, int r, int c, int border) { // border -> 0 = left wall, 1 = right wall, 2 == upper/lower wall
     unsigned char value = map->cells[(((r - 1) * map->cols) + (c-1))];
-    if (border == LEFT_WALL) {
+    if (border == 0) {
         if (((value >> 0) & 1) == 1) {
             return true;
         }
-    } else if (border == RIGHT_WALL) {
+    } else if (border == 1) {
         if (((value>> 1) & 1) == 1) {
             return true;
         }
@@ -301,38 +276,36 @@ bool isborder(Map *map, int r, int c, int border) {
     return false;
 }
 
-// Control of the side from which we enter the cell and the cells borders
 int start_border(Map *map, int r, int c, int leftright) {
     bool borderL = isborder(map, r, c, 0);
     bool borderR = isborder(map, r, c, 1);
     bool borderUL = isborder(map, r, c, 2);
 
-    if ((leftright == RIGHT_HAND) || (leftright == LEFT_HAND)) {
+    if ((leftright == 0) || (leftright == 1)) {
         if (c == 1) {
             if (borderL == false) {
-                return STEP_INTO_FROM_LEFT;
+                return 1; // step into from left
             }
         }
         if (c == map->cols) {
             if (borderR == false) {
-                return STEP_INTO_FROM_RIGHT;
+                return 2; // step into from right
             }
         }
         if (r == 1) {
             if (borderUL == false) {
-                return STEP_INTO_FROM_UP;
+                return 3; // step into from up
             }
         }
         if (r == map->rows) {
             if (borderUL == false) {
-                return STEP_INTO_FROM_DOWN;
+                return 4; // step into from down
             }
         }
     }
     return -1;
 }
 
-// Evaluation of which cell we enter as the next one
 int move(Map *map, int* r, int* c, int leftright, bool borderL, bool borderR, bool borderUL, bool *firstStep, int *step) {
     if (*firstStep == true) {
         *step = start_border(map, *r, *c, leftright);
@@ -341,182 +314,182 @@ int move(Map *map, int* r, int* c, int leftright, bool borderL, bool borderR, bo
 
     // shape - ▼
     if (( *r % 2 != 0 && *c % 2 != 0) || (*r % 2 == 0 && *c % 2 == 0)) {
-        if (leftright == RIGHT_HAND) {
-            if (*step == STEP_INTO_FROM_LEFT) {
+        if (leftright == 0) {
+            if (*step == 1) {
                 if (borderR == false) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
                 if (borderR == true && borderUL == false) {
                     *r -= 1;
-                    *step = STEP_INTO_FROM_DOWN;
+                    *step = 4;
                 }
                 if ((borderR == true && borderUL == true && borderL == false)) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
-            } else if (*step == STEP_INTO_FROM_RIGHT) {
+            } else if (*step == 2) {
                 if (borderUL == false) {
                     *r -= 1;
-                    *step = STEP_INTO_FROM_DOWN;
+                    *step = 4;
                 }
                 if (borderUL == true && borderL == false) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
                 if (borderUL == true && borderL == true && borderR == false) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
 
-            } else if (*step == STEP_INTO_FROM_UP) {
+            } else if (*step == 3) {
                 if (borderL == false) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
                 if (borderL == true && borderR == false) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
                 if (borderL == true && borderR == true && borderUL == false) {
                     *r -= 1;
-                    *step = STEP_INTO_FROM_DOWN;
+                    *step = 4;
                 }
             }
         }
-        // leftright = LEFT_HAND
+        // leftright = 1
         else{
-            if (*step == STEP_INTO_FROM_LEFT) {
+            if (*step == 1) {
                 if (borderUL == false) {
                     *r -= 1;
-                    *step = STEP_INTO_FROM_DOWN;
+                    *step = 4;
                 }
                 if (borderUL == true && borderR == false) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
                 if ((borderUL == true && borderR == true && borderL == false)) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
-            } else if (*step == STEP_INTO_FROM_RIGHT) {
+            } else if (*step == 2) {
                 if (borderL == false) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
                 if (borderL == true && borderUL == false) {
                     *r -= 1;
-                    *step = STEP_INTO_FROM_DOWN;
+                    *step = 4;
                 }
                 if (borderL == true && borderUL == true && borderR == false) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
 
-            } else if (*step == STEP_INTO_FROM_UP) {
+            } else if (*step == 3) {
                 if (borderR == false) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
                 if (borderR == true && borderL == false) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
                 if (borderR == true && borderL == true && borderUL == false) {
                     *r -= 1;
-                    *step = STEP_INTO_FROM_DOWN;
+                    *step = 4;
                 }
             }
         }
     }
     // shape - ▲
     else if ((*r % 2 != 0 && *c % 2 == 0) || (*r % 2 == 0 && *c % 2 != 0)) {
-        if (leftright == RIGHT_HAND) {
-            if (*step == STEP_INTO_FROM_LEFT) {
+        if (leftright == 0) {
+            if (*step == 1) {
                 if (borderUL == false) {
                     *r += 1;
-                    *step = STEP_INTO_FROM_UP;
+                    *step = 3;
                 }
                 if (borderUL == true && borderR == false ) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
                 if ((borderUL == true && borderR == true && borderL == false )) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
             }
-            else if (*step == STEP_INTO_FROM_RIGHT) {
+            else if (*step == 2) {
                 if (borderL == false) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
                 if (borderL == true && borderUL == false) {
                     *r += 1;
-                    *step = STEP_INTO_FROM_UP;
+                    *step = 3;
                 }
                 if (borderL == true && borderUL == true && borderR == false) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
             }
-            else if (*step == STEP_INTO_FROM_DOWN) {
+            else if (*step == 4) {
                 if (borderR == false) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
                 if (borderR == true && borderL == false) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
                 if (borderR == true && borderL == true && borderUL == false) {
                     *r += 1;
-                    *step = STEP_INTO_FROM_UP;
+                    *step = 3;
                 }
             }
         }
-        // leftright = LEFT_HAND
+        // leftright = 1
         else {
-            if (*step == STEP_INTO_FROM_LEFT) {
+            if (*step == 1) {
                 if (borderR == false) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
                 if (borderR == true && borderUL == false ) {
                     *r += 1;
-                    *step = STEP_INTO_FROM_UP;
+                    *step = 3;
                 }
                 if ((borderR == true && borderUL == true && borderL == false )) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
             }
-            else if (*step == STEP_INTO_FROM_RIGHT) {
+            else if (*step == 2) {
                 if (borderUL == false) {
                     *r += 1;
-                    *step = STEP_INTO_FROM_UP;
+                    *step = 3;
                 }
                 if (borderUL == true && borderL == false) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
                 if (borderUL == true && borderL == true && borderR == false) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
             }
-            else if (*step == STEP_INTO_FROM_DOWN) {
+            else if (*step == 4) {
                 if (borderL == false) {
                     *c -= 1;
-                    *step = STEP_INTO_FROM_RIGHT;
+                    *step = 2;
                 }
                 if (borderL == true && borderR == false) {
                     *c += 1;
-                    *step = STEP_INTO_FROM_LEFT;
+                    *step = 1;
                 }
                 if (borderL == true && borderR == true && borderUL == false) {
                     *r += 1;
-                    *step = STEP_INTO_FROM_UP;
+                    *step = 3;
                 }
             }
         }
@@ -524,7 +497,6 @@ int move(Map *map, int* r, int* c, int leftright, bool borderL, bool borderR, bo
     return 0;
 }
 
-// Solving maze according to right-hand rule
 int solveMazeR(int r, int c, const char *fileName) {
     Map maze;
     readMap(&maze, fileName);
@@ -548,11 +520,11 @@ int solveMazeR(int r, int c, const char *fileName) {
     while (positionR > 0 && positionC > 0 && positionR <= maze.rows && positionC <= maze.cols) {
         printf("%d,%d\n", positionR, positionC);
 
-        borderL = isborder(&maze, positionR, positionC, LEFT_WALL);
-        borderR = isborder(&maze, positionR, positionC, RIGHT_WALL);
-        borderUL = isborder(&maze, positionR, positionC, UPPERorLOWER_WALL);
+        borderL = isborder(&maze, positionR, positionC, 0);
+        borderR = isborder(&maze, positionR, positionC, 1);
+        borderUL = isborder(&maze, positionR, positionC, 2);
 
-        move(&maze, &*pPosR, &*pPosC, RIGHT_HAND, borderL, borderR, borderUL, &firstStep, &step);
+        move(&maze, &*pPosR, &*pPosC, 0, borderL, borderR, borderUL, &firstStep, &step);
 
         if (((historyR != positionR) || (historyC != positionC)) &&
         (positionR > 0 && positionC > 0 && positionR <= maze.rows && positionC <= maze.cols)) {
@@ -569,7 +541,6 @@ int solveMazeR(int r, int c, const char *fileName) {
     return 0;
 }
 
-// Solving maze according to left-hand rule
 int solveMazeL(int r, int c, const char *fileName) {
     Map maze;
     readMap(&maze, fileName);
@@ -593,11 +564,11 @@ int solveMazeL(int r, int c, const char *fileName) {
     while (positionR > 0 && positionC > 0 && positionR <= maze.rows && positionC <= maze.cols) {
         printf("%d,%d\n", positionR, positionC);
 
-        borderL = isborder(&maze, positionR, positionC, LEFT_WALL);
-        borderR = isborder(&maze, positionR, positionC, RIGHT_WALL);
-        borderUL = isborder(&maze, positionR, positionC, UPPERorLOWER_WALL);
+        borderL = isborder(&maze, positionR, positionC, 0);
+        borderR = isborder(&maze, positionR, positionC, 1);
+        borderUL = isborder(&maze, positionR, positionC, 2);
 
-        move(&maze, &*pPosR, &*pPosC, LEFT_HAND, borderL, borderR, borderUL, &firstStep, &step);
+        move(&maze, &*pPosR, &*pPosC, 1, borderL, borderR, borderUL, &firstStep, &step);
 
         if (((historyR != positionR) || (historyC != positionC)) &&
             (positionR > 0 && positionC > 0 && positionR <= maze.rows && positionC <= maze.cols)) {
