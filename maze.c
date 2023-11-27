@@ -561,6 +561,7 @@ int solveMazeR(int r, int c, const char *fileName) {
         }
         else {
             //We are out of maze
+            freeMap(&maze);
             return 0;
         }
     }
@@ -606,6 +607,7 @@ int solveMazeL(int r, int c, const char *fileName) {
         }
         else {
             //We are out of maze
+            freeMap(&maze);
             return 0;
         }
     }
