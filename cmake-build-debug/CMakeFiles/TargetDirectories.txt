@@ -1,3 +1,3 @@
-/Users/patrik-dekys/CLionProjects/Projekt2_2/cmake-build-debug/CMakeFiles/Projekt_2_0.dir
-/Users/patrik-dekys/CLionProjects/Projekt2_2/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/patrik-dekys/CLionProjects/Projekt2_2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/patrik-dekys/CLionProjects/IZPProjekt2/cmake-build-debug/CMakeFiles/IZPProjekt2.dir
+/Users/patrik-dekys/CLionProjects/IZPProjekt2/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/patrik-dekys/CLionProjects/IZPProjekt2/cmake-build-debug/CMakeFiles/rebuild_cache.dir

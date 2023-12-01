@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/patrik-dekys/CLionProjects/Projekt2_2/cmake-build-debug"
+			"value" : "/Users/patrik-dekys/CLionProjects/IZPProjekt2/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -383,7 +383,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/patrik-dekys/CLionProjects/Projekt2_2/cmake-build-debug/CMakeFiles/pkgRedirects"
+			"value" : "/Users/patrik-dekys/CLionProjects/IZPProjekt2/cmake-build-debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -443,7 +443,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/patrik-dekys/CLionProjects/Projekt2_2"
+			"value" : "/Users/patrik-dekys/CLionProjects/IZPProjekt2"
 		},
 		{
 			"name" : "CMAKE_INSTALL_NAME_TOOL",
@@ -723,7 +723,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "Projekt_2_0"
+			"value" : "IZPProjekt2"
 		},
 		{
 			"name" : "CMAKE_RANLIB",
@@ -1006,7 +1006,7 @@
 			"value" : "FALSE"
 		},
 		{
-			"name" : "Projekt_2_0_BINARY_DIR",
+			"name" : "IZPProjekt2_BINARY_DIR",
 			"properties" : 
 			[
 				{
@@ -1015,10 +1015,10 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/patrik-dekys/CLionProjects/Projekt2_2/cmake-build-debug"
+			"value" : "/Users/patrik-dekys/CLionProjects/IZPProjekt2/cmake-build-debug"
 		},
 		{
-			"name" : "Projekt_2_0_IS_TOP_LEVEL",
+			"name" : "IZPProjekt2_IS_TOP_LEVEL",
 			"properties" : 
 			[
 				{
@@ -1030,7 +1030,7 @@
 			"value" : "ON"
 		},
 		{
-			"name" : "Projekt_2_0_SOURCE_DIR",
+			"name" : "IZPProjekt2_SOURCE_DIR",
 			"properties" : 
 			[
 				{
@@ -1039,7 +1039,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/patrik-dekys/CLionProjects/Projekt2_2"
+			"value" : "/Users/patrik-dekys/CLionProjects/IZPProjekt2"
 		}
 	],
 	"kind" : "cache",

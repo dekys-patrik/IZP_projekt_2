@@ -138,87 +138,43 @@ int testMap(const char *fileName) {
     }
 
     // Read the first line (definition of rows and columns)
-    int count = 0; // In the first line must be only 2 characters
-    int c; // Pointer in file
-    while ((c = fgetc(file)) != '\n') {
-        if (c != ' ') {
-            count++;
-        }
-    }
-    if (count > 2) {
-        printf("Invalid\n");
-        return 1;
-    }
-
-    // Reset the file pointer to the beginning and assigning size of matrix
-    fseek(file, 0, SEEK_SET);
     int rows, cols;
     if (fscanf(file, "%d %d", &rows, &cols) != 2) {
-        printf("Invalid\n");
+        fclose(file);
+        return 1;
+    }
+    if (rows <= 0 || cols <= 0) {
         fclose(file);
         return 1;
     }
 
-    // Counting of provided data for matrix
-    int R = 0; // R = rows
-    bool emptyLine;
-    while ((c = fgetc(file)) != EOF ) {
-        if (c != '\n'){
-            emptyLine = false;
-        }
-        if (c == '\n' && emptyLine == false) {
-            R++;
-            emptyLine = true;
-        }
-        // Looking for illegal signs
-        if (c!= '\n' && c != ' ' && (c < '0' || c > '7')) {
-            printf("Invalid\n");
-            return 1;
-        }
-    }
-    if (emptyLine == true){
-        R--;
-    }
+    Map map;
+    initMap(&map, rows, cols);
 
-    // Condition if is not provided number of rows same as real amount of rows in matrix
-    if (rows != R) {
-        printf("Invalid\n");
-        return 1;
-    }
+    // Read other values
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            unsigned char value;
+            value = fgetc(file);
 
-    // Reset of the file pointer to count columns
-    fseek(file, 0, SEEK_SET);
-
-    // Skip the first line
-    while ((c = fgetc(file)) != '\n') {
-        if (c == EOF) {
-            printf("Invalid\n");
-            fclose(file);
-            return 1;
-        }
-    }
-
-    // Check the number of printable signs in each line
-    for (int i = 0; i < R; i++) {
-        int signs = 0;
-        while ((c = fgetc(file)) != '\n' && c != EOF) {
-            if (c != ' ') {
-                signs++;
+            if (value > '7') {
+                fclose(file);
+                freeMap(&map);
+                return 1;
             }
+            map.cells[i * cols + j] = value;
         }
-        // Compare the number of signs with columns
-        if (signs != cols) {
-            printf("Invalid\n");
-            fclose(file);
-            return 1;
+        int c;
+        while ((c = fgetc(file)) != '\n' && c != EOF) {
+            // Do nothing, just go to the end of the row
         }
     }
+    freeMap(&map);
 
     Map maze;
     readMap(&maze, fileName);
 
     if (!sharedBorder(&maze)) {
-        printf("Invalid\n");
         fclose(file);
         freeMap(&maze);
         return 1;
@@ -227,7 +183,6 @@ int testMap(const char *fileName) {
     fclose(file);
     freeMap(&maze);
 
-    printf("Valid\n");
     return 0;
 }
 
@@ -526,6 +481,11 @@ int move(Map *map, int* r, int* c, int leftright, bool borderL, bool borderR, bo
 
 // Solving maze according to right-hand rule
 int solveMazeR(int r, int c, const char *fileName) {
+    if (testMap(fileName)) {
+        printf("Definition of maze is INVALID");
+        return 1;
+    }
+
     Map maze;
     readMap(&maze, fileName);
 
@@ -572,6 +532,11 @@ int solveMazeR(int r, int c, const char *fileName) {
 
 // Solving maze according to left-hand rule
 int solveMazeL(int r, int c, const char *fileName) {
+    if (testMap(fileName)) {
+        printf("Definition of maze is INVALID");
+        return 1;
+    }
+
     Map maze;
     readMap(&maze, fileName);
 
@@ -628,7 +593,12 @@ int main(int argc, char *argv[]) {
     if (strcmp(argv[1], "--help") == 0) {
         printHelp();
     } else if (strcmp(argv[1], "--test") == 0) {
-        testMap(fileName);
+        if (testMap(fileName)) {
+            printf("Invalid\n");
+        }
+        else {
+            printf("Valid\n");
+        }
     } else if (strcmp(argv[1], "--rpath") == 0 && argc == 5) {
         int R = atoi(argv[2]);
         int C = atoi(argv[3]);

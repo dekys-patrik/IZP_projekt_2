@@ -55,6 +55,7 @@ run_test() {
 # tests
 echo -e "6 7\n1 4 4 2 5 0 6\n1 4 4 0 4 0 2\n1 0 4 0 4 6 1\n1 2 7 1 0 4 2\n3 1 4 2 3 1 2\n4 2 5 0 4 2 5" > test_01.txt
 
+# 0
 run_test "test_01.txt" "--lpath 6 1" "6,1
 6,2
 5,2
@@ -90,8 +91,10 @@ run_test "test_01.txt" "--lpath 6 1" "6,1
 1,2
 1,1"
 
+# 1
 run_test "test_01.txt" "--lpath 6 7" "6,7"
 
+# 2
 run_test "test_01.txt" "--rpath 6 1" "6,1
 6,2
 5,2
@@ -125,9 +128,11 @@ run_test "test_01.txt" "--rpath 6 1" "6,1
 2,7
 3,7"
 
+# 3
 run_test "test_01.txt" "--rpath 6 7" "6,7"
 
 # tests by cubko
+# 4
 run_test "test_01.txt" "--lpath 3 7" "3,7
 2,7
 2,6
@@ -161,6 +166,7 @@ run_test "test_01.txt" "--lpath 3 7" "3,7
 6,2
 6,1"
 
+# 5
 run_test "test_01.txt" "--rpath 1 1" "1,1
 1,2
 1,3
@@ -196,19 +202,27 @@ run_test "test_01.txt" "--rpath 1 1" "1,1
 6,2
 6,1"
 
+# 6
 run_test "test_01.txt" "--test" "Valid"
 
 echo -e "6 7\n1 4 4 2 5 0 6\n1 4 4 0 4 0 2\n1 0 4 0 3 6 1\n1 2 7 1 0 4 2\n3 1 4 2 3 1 2\n4 2 5 0 4 2 5" > test_02.txt
+
+# 7
 run_test "test_02.txt" "--test" "Invalid"
 
+# on fourth line there is an H instead of a number
 echo -e "6 7\n1 4 4 2 5 0 6\n1 4 4 0 4 0 2\n1 0 4 0 H 6 1\n1 2 7 1 0 4 2\n3 1 4 2 3 1 2\n4 2 5 0 4 2 5" > test_03.txt
+# 8
 run_test "test_03.txt" "--test" "Invalid"
 
+# last line has more 8 numbers instead of 7 (this is correct, based on what Smrčka said)
 echo -e "6 7\n1 4 4 2 5 0 6\n1 4 4 0 4 0 2\n1 0 4 0 4 6 1\n1 2 7 1 0 4 2\n3 1 4 2 3 1 2\n4 2 5 0 4 2 5 6" > test_04.txt
-run_test "test_04.txt" "--test" "Invalid"
+# 9
+run_test "test_04.txt" "--test" "Valid"
 
 echo -e "10 10\n7 1 2 3 5 0 6 1 4 2\n1 2 3 1 4 0 6 1 2 3\n1 2 1 0 6 1 4 0 2 3\n1 0 0 2 1 0 2 1 4 2\n1 2 1 4 0 2 1 4 4 2\n3 1 4 4 2 1 0 6 1 2\n1 0 4 2 1 2 3 1 2 3\n1 2 3 1 4 0 2 1 0 2\n1 4 2 1 4 2 3 1 0 2\n5 4 4 0 2 1 4 2 5 2" >test_05.txt
 
+# 10
 run_test "test_05.txt" "--rpath 1 3" "1,3
 1,2
 2,2
@@ -310,6 +324,7 @@ run_test "test_05.txt" "--rpath 1 3" "1,3
 10,4
 10,5"
 
+# 11
 run_test "test_05.txt" "--lpath 1 3" "1,3
 1,2
 2,2
@@ -396,8 +411,10 @@ run_test "test_05.txt" "--lpath 1 3" "1,3
 # if this is giving you "Invalid", check that you are handling the last line correctly, because there is no new line before the end of the file
 echo -e "6 7\n5 6 1 2 1 0 6\n1 4 4 0 4 0 2\n1 0 4 0 4 6 1\n1 2 7 1 0 4 0\n2 1 4 2 3 1 2\n4 2 5 0 0 2 5" > test_06.txt
 
+# 12
 run_test "test_06.txt" "--test" "Valid"
 
+# 13
 run_test "test_06.txt" "--rpath 1 3" "1,3
 1,4
 2,4
@@ -410,6 +427,7 @@ run_test "test_06.txt" "--rpath 1 3" "1,3
 4,1
 5,1"
 
+# 14
 run_test "test_06.txt" "--lpath 1 3" "1,3
 1,4
 2,4
@@ -418,6 +436,7 @@ run_test "test_06.txt" "--lpath 1 3" "1,3
 1,6
 1,5"
 
+# 15
 run_test "test_06.txt" "--rpath 1 5" "1,5
 1,6
 2,6
@@ -426,6 +445,7 @@ run_test "test_06.txt" "--rpath 1 5" "1,5
 1,4
 1,3"
 
+# 16
 run_test "test_06.txt" "--lpath 1 5" "1,5
 1,6
 1,7
@@ -434,6 +454,7 @@ run_test "test_06.txt" "--lpath 1 5" "1,5
 2,7
 3,7"
 
+# 17
 run_test "test_06.txt" "--rpath 6 1" "6,1
 6,2
 5,2
@@ -444,6 +465,7 @@ run_test "test_06.txt" "--rpath 6 1" "6,1
 6,4
 6,5"
 
+# 18
 run_test "test_06.txt" "--lpath 6 1" "6,1
 6,2
 5,2
@@ -470,22 +492,32 @@ run_test "test_06.txt" "--lpath 6 1" "6,1
 # if this is giving you an error, check if you are correctly working with whitespace characters
 echo -e "  6 7   1 4 4 2 5  0    6 1 4    4 0 4                0 2\n   1 0 4 0  4 6 1\n  1 2 7  1  0 4 2  3 1   4 2 3 1 2\n   4    2 5 0 4 2    5" > test_07.txt
 
+# 19
 run_test "test_07.txt" "--test" "Valid"
 
-# 43 cells instead of 42
+# 43 cells instead of 42 (this is correct, based on what Smrčka said)
 echo -e "6 7\n1 4 4 2 5 0 6\n1 4 4 0 4 0 2\n1 0 4 0 4 6 1\n1 2 7 1 0 4 2\n3 1 4 2 3 1 2\n4 2 5 0 4 2 5 1" > test_08.txt
 
-run_test "test_08.txt" "--test" "Invalid"
+# 20
+run_test "test_08.txt" "--test" "Valid"
 
 # 41 cells instead of 42
 echo -e "6 7\n1 4 4 2 0 6\n1 4 4 0 4 0 2\n1 0 4 0 4 6 1\n1 2 7 1 0 4 2\n3 1 4 2 3 1 2\n4 2 5 0 4 2 5" > test_09.txt
 
+# 21
 run_test "test_09.txt" "--test" "Invalid"
 
 # letters instead of some numbers
 echo -e "6 7\n1 4 4 2 5 0 6\n1 4 4 C 4 0 2\n1 0 4 0 4 6 1\n1 A 7 1 0 4 2\n3 1 4 2 3 1 2\n4 2 5 0 4 2 T" > test_10.txt
 
+# 22
 run_test "test_10.txt" "--test" "Invalid"
+
+# negative maze size
+echo -e "-6 -7\n1 4 4 2 5 0 6\n1 4 4 0 4 0 2\n1 0 4 0 4 6 1\n1 2 7 1 0 4 2\n3 1 4 2 3 1 2\n4 2 5 0 4 2 5" > test_11.txt
+
+# 23
+run_test "test_11.txt" "--test" "Invalid"
 
 # print test results
 if [[ "$correct" == "$test_count" ]]; then
@@ -497,6 +529,8 @@ fi
 # remove temp test files
 # if you want individual tests comment line with the test you want to keep
 # make sure to later uncomment tho :D
+
+rm test_11.txt
 rm test_10.txt
 rm test_09.txt
 rm test_08.txt

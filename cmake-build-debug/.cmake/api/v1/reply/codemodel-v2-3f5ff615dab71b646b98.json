@@ -27,7 +27,7 @@
 					[
 						0
 					],
-					"name" : "Projekt_2_0",
+					"name" : "IZPProjekt2",
 					"targetIndexes" : 
 					[
 						0
@@ -38,9 +38,9 @@
 			[
 				{
 					"directoryIndex" : 0,
-					"id" : "Projekt_2_0::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Projekt_2_0-Debug-39035b0f53e8664270d3.json",
-					"name" : "Projekt_2_0",
+					"id" : "IZPProjekt2::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-IZPProjekt2-Debug-59b31be44d38105002fe.json",
+					"name" : "IZPProjekt2",
 					"projectIndex" : 0
 				}
 			]
@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/patrik-dekys/CLionProjects/Projekt2_2/cmake-build-debug",
-		"source" : "/Users/patrik-dekys/CLionProjects/Projekt2_2"
+		"build" : "/Users/patrik-dekys/CLionProjects/IZPProjekt2/cmake-build-debug",
+		"source" : "/Users/patrik-dekys/CLionProjects/IZPProjekt2"
 	},
 	"version" : 
 	{
